@@ -18,7 +18,7 @@ include(./get_cpm.cmake)
 
 #######################################
 # cmake lib
-CPMAddPackage(gh:iboB/icm@1.4.4)
+CPMAddPackage(gh:iboB/icm@1.4.6)
 
 list(APPEND CMAKE_MODULE_PATH
     "${icm_SOURCE_DIR}"
@@ -36,56 +36,52 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-set(compilerFlags "")
-set(linkerFlags "")
-set(compilerAndLinkerFlags "")
-
 if(MSVC)
     # /Zc:preprocessor - incompatible with Windows.h
-    # /Zc:templateScope - TODO: add when msvc 17.5 is the norm
-    set(compilerFlags "/W4 -D_CRT_SECURE_NO_WARNINGS /Zc:__cplusplus /permissive-\
-        /volatile:iso /Zc:throwingNew /utf-8 -DNOMINMAX=1\
-        /w34100 /w34189 /w34701 /w34702 /w34703 /w34706 /w34714 /w34913\
-        /wd4251 /wd4275"
+    add_compile_options(
+        /W4
+        -D_CRT_SECURE_NO_WARNINGS /Zc:__cplusplus /permissive-
+        /volatile:iso /Zc:throwingNew /Zc:templateScope /utf-8 -DNOMINMAX=1
+        /wd4251 /wd4275
     )
 else()
-    set(compilerFlags "-Wall -Wextra")
+    add_compile_options(-Wall -Wextra)
 endif()
 
+# sanitizers
 if(MSVC)
     if(SAN_ADDR)
-        set(compilerFlags "${compilerFlags} /fsanitize=address")
+        add_compile_options(/fsanitize=address)
     endif()
     if(SAN_THREAD OR SAN_UB OR SAN_LEAK)
         message(WARNING "Unsupported sanitizers requested for msvc. Ignored")
     endif()
 else()
     if(SAN_THREAD)
-        set(compilerAndLinkerFlags "${compilerAndLinkerFlags} -fsanitize=thread -g")
+        set(sanitizerFlags -fsanitize=thread -g)
         if(SAN_ADDR OR SAN_UB OR SAN_LEAK)
             message(WARNING "Incompatible sanitizer combination requested. Only 'SAN_THREAD' will be respected")
         endif()
     else()
         if(SAN_ADDR)
-            set(compilerAndLinkerFlags "${compilerAndLinkerFlags} -fsanitize=address -pthread")
+            list(APPEND sanitizerFlags -fsanitize=address -pthread)
         endif()
         if(SAN_UB)
-            set(compilerAndLinkerFlags "${compilerAndLinkerFlags} -fsanitize=undefined")
+            list(APPEND sanitizerFlags -fsanitize=undefined)
         endif()
         if(SAN_LEAK)
             if(APPLE)
                 message(WARNING "Unsupported leak sanitizer requested for Apple. Ignored")
             else()
-                set(compilerAndLinkerFlags "${compilerAndLinkerFlags} -fsanitize=leak")
+                list(APPEND sanitizerFlags -fsanitize=leak)
             endif()
         endif()
     endif()
+    if(sanitizerFlags)
+        add_compile_options(${sanitizerFlags})
+        add_link_options(${sanitizerFlags})
+    endif()
 endif()
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${compilerFlags} ${compilerAndLinkerFlags}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${compilerFlags} ${compilerAndLinkerFlags}")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${linkerFlags} ${compilerAndLinkerFlags}")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${linkerFlags} ${compilerAndLinkerFlags}")
 
 ######################
 # misc
@@ -97,7 +93,7 @@ enable_testing()
 ######################
 # packages
 CPMAddPackage(gh:iboB/splat@1.3.1)
-CPMAddPackage(gh:iboB/itlib@1.9.1)
+CPMAddPackage(gh:iboB/itlib@1.9.2)
 
 ######################
 # subdirs
