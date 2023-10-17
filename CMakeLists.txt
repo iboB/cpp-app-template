@@ -7,12 +7,6 @@ project(my_app_template
     LANGUAGES C CXX
 )
 
-option(SAN_THREAD "my_app_template: sanitize thread" OFF)
-option(SAN_ADDR "my_app_template: sanitize address" OFF)
-option(SAN_UB "my_app_template: sanitize undefined behavior" OFF)
-option(SAN_LEAK "my_app_template: sanitize leaks" OFF)
-mark_as_advanced(SAN_THREAD SAN_ADDR SAN_UB SAN_LEAK)
-
 # cpm
 include(./get_cpm.cmake)
 
@@ -39,19 +33,25 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 if(MSVC)
     # /Zc:preprocessor - incompatible with Windows.h
     add_compile_options(
-        /W4
-        -D_CRT_SECURE_NO_WARNINGS /Zc:__cplusplus /permissive-
-        /volatile:iso /Zc:throwingNew /Zc:templateScope /utf-8 -DNOMINMAX=1
-        /wd4251 /wd4275
+        -W4
+        -D_CRT_SECURE_NO_WARNINGS -Zc:__cplusplus -permissive-
+        -volatile:iso -Zc:throwingNew -Zc:templateScope -utf-8 -DNOMINMAX=1
+        -wd4251 -wd4275
     )
 else()
     add_compile_options(-Wall -Wextra)
 endif()
 
 # sanitizers
+option(SAN_THREAD "my_app_template: sanitize thread" OFF)
+option(SAN_ADDR "my_app_template: sanitize address" OFF)
+option(SAN_UB "my_app_template: sanitize undefined behavior" OFF)
+option(SAN_LEAK "my_app_template: sanitize leaks" OFF)
+mark_as_advanced(SAN_THREAD SAN_ADDR SAN_UB SAN_LEAK)
+
 if(MSVC)
     if(SAN_ADDR)
-        add_compile_options(/fsanitize=address)
+        add_compile_options(-fsanitize=address)
     endif()
     if(SAN_THREAD OR SAN_UB OR SAN_LEAK)
         message(WARNING "Unsupported sanitizers requested for msvc. Ignored")
