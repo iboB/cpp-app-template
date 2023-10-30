@@ -43,10 +43,10 @@ else()
 endif()
 
 # sanitizers
-option(SAN_THREAD "my_app_template: sanitize thread" OFF)
-option(SAN_ADDR "my_app_template: sanitize address" OFF)
-option(SAN_UB "my_app_template: sanitize undefined behavior" OFF)
-option(SAN_LEAK "my_app_template: sanitize leaks" OFF)
+option(SAN_THREAD "${PROJECT_NAME}: sanitize thread" OFF)
+option(SAN_ADDR "${PROJECT_NAME}: sanitize address" OFF)
+option(SAN_UB "${PROJECT_NAME}: sanitize undefined behavior" OFF)
+option(SAN_LEAK "${PROJECT_NAME}: sanitize leaks" OFF)
 mark_as_advanced(SAN_THREAD SAN_ADDR SAN_UB SAN_LEAK)
 
 if(MSVC)
