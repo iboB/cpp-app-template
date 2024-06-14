@@ -2,6 +2,8 @@ build/
 out/
 tmp/
 
+/CMakeUserPresets.json
+
 # ides
 .vscode/
 .vs/
