@@ -1,18 +1,24 @@
 # Copyright (c) Borislav Stanimirov
 # SPDX-License-Identifier: MIT
 #
-cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 project(my_app_template
     LANGUAGES C CXX
 )
 
 # cpm
+#################
+# cpm
+if(NOT CPM_SOURCE_CACHE AND NOT DEFINED ENV{CPM_SOURCE_CACHE})
+    set(CPM_SOURCE_CACHE "${CMAKE_SOURCE_DIR}/.cpm" CACHE PATH "CPM source cache")
+    message(STATUS "Setting cpm cache dir to: ${CPM_SOURCE_CACHE}")
+endif()
 include(./get_cpm.cmake)
 
 #######################################
 # cmake lib
-CPMAddPackage(gh:iboB/icm@1.5.1)
+CPMAddPackage(gh:iboB/icm@1.5.5)
 
 list(APPEND CMAKE_MODULE_PATH
     "${icm_SOURCE_DIR}"
@@ -22,11 +28,11 @@ list(APPEND CMAKE_MODULE_PATH
 ######################
 # compiler settings
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_EXTENSIONS OFF)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
@@ -85,15 +91,16 @@ endif()
 
 ######################
 # misc
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON) # solution folders
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin) # all executables go to bin
-set(CMAKE_LINK_DEPENDS_NO_SHARED ON) # no file deps on linker
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin) # binaries to bin
+set(CMAKE_LINK_DEPENDS_NO_SHARED ON) # only relink exe if so interface changes
 enable_testing()
 
 ######################
 # packages
 CPMAddPackage(gh:iboB/splat@1.3.3)
-CPMAddPackage(gh:iboB/itlib@1.11.1)
+CPMAddPackage(gh:iboB/itlib@1.11.7)
 
 ######################
 # subdirs

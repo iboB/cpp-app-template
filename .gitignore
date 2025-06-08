@@ -1,9 +1,19 @@
-build/
-out/
+# project specific temp dirs
 tmp/
 
-/CMakeUserPresets.json
+# common in-source build artefact dirs
+out/
+build/
 
-# ides
-.vscode/
+# configure artefacts
+gen/
+
+# optional cpm source cache (if not otherwise set)
+.cpm/
+
+# ides and editors
 .vs/
+.vscode/
+/CMakeSettings.json
+/CMakeUserPresets.json
+.~*
