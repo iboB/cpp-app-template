@@ -18,7 +18,7 @@ include(./get_cpm.cmake)
 
 #######################################
 # cmake lib
-CPMAddPackage(gh:iboB/icm@1.5.5)
+CPMAddPackage(gh:iboB/icm@1.5.6)
 
 list(APPEND CMAKE_MODULE_PATH
     "${icm_SOURCE_DIR}"
@@ -99,8 +99,8 @@ enable_testing()
 
 ######################
 # packages
-CPMAddPackage(gh:iboB/splat@1.3.4)
-CPMAddPackage(gh:iboB/itlib@1.11.7)
+CPMAddPackage(gh:iboB/splat@1.3.5)
+CPMAddPackage(gh:iboB/itlib@1.12.2)
 
 ######################
 # subdirs
