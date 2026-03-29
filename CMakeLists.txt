@@ -40,12 +40,25 @@ if(MSVC)
     # /Zc:preprocessor - incompatible with Windows.h
     add_compile_options(
         -W4
-        -D_CRT_SECURE_NO_WARNINGS -Zc:__cplusplus -permissive-
-        -volatile:iso -Zc:throwingNew -Zc:templateScope -utf-8 -DNOMINMAX=1
-        -wd4251 -wd4275
+        -Zc:__cplusplus -permissive-
+        -volatile:iso -Zc:throwingNew -Zc:templateScope -utf-8
+        -wd4251 -wd4275 -wd5030
     )
 else()
-    add_compile_options(-Wall -Wextra)
+    add_compile_options(-Wall -Wextra
+
+        # this warning is just stupid and defeats the whole purpose of designated initializers
+        -Wno-missing-field-initializers
+    )
+endif()
+
+if(WIN32)
+    add_compile_options(
+        -D_CRT_SECURE_NO_WARNINGS
+    )
+    add_compile_options(
+        -DNOMINMAX=1
+    )
 endif()
 
 # sanitizers
