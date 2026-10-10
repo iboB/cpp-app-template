@@ -113,7 +113,7 @@ enable_testing()
 ######################
 # packages
 CPMAddPackage(gh:iboB/splat@1.3.5)
-CPMAddPackage(gh:iboB/itlib@1.12.2)
+CPMAddPackage(gh:iboB/itlib@1.12.3)
 
 ######################
 # subdirs
